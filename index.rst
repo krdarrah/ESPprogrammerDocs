@@ -31,10 +31,10 @@ The board ships with everything ready to go - preloaded with firmware to start f
 
 **Target Power**
    The board has a PH-2 JST connector that can be used to power the target ESP32.  There are 4 power sources for this connector selected by jumper:
-   * 3.0V is a switched power source that the board can turn on/off on-demand.  Very useful for power cycling the target and since it's 3.0V, can be used for calibration.  **RECCOMENDED**
-   * 5V always on from USB, or boosted if running on battery
-   * 3.3V always on
-   * VBAT is the raw battery voltage
+* 3.0V is a switched power source that the board can turn on/off on-demand.  Very useful for power cycling the target and since it's 3.0V, can be used for calibration.  **RECCOMENDED**
+* 5V always on from USB, or boosted if running on battery
+* 3.3V always on
+* VBAT is the raw battery voltage
 
 **Files**
 
