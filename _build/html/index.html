@@ -35,7 +35,8 @@
 
     
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Usage" href="usage.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -80,16 +81,12 @@
               
             
             
-              <!-- Local TOC -->
-              <div class="local-toc"><ul>
-<li><a class="reference internal" href="#">ESP Programmer</a><ul>
-<li><a class="reference internal" href="#what-is-it"><strong>What is it?</strong></a></li>
-<li><a class="reference internal" href="#usage"><strong>Usage</strong></a></li>
-<li><a class="reference internal" href="#source"><strong>Source</strong></a></li>
+              <p class="caption"><span class="caption-text">ESPprogrammer Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="usage.html"><strong>Usage</strong></a></li>
+<li class="toctree-l1"><a class="reference internal" href="source.html"><strong>Source</strong></a></li>
 </ul>
-</li>
-</ul>
-</div>
+
             
           
         </div>
@@ -168,65 +165,19 @@
 <li>1x6 female connector for “FTDI” style cables, and 2x3 IDC male header, which is nice for Tag Connect Cables</li>
 <li>EXPANSION!  ALl spare IO broken out to pads, which could be used to control an automated fixture - relays, sensors, etc… or even if the auto-reset circuit requires RTS and CTS signal.</li>
 </ul>
-</div>
-<div class="section" id="usage">
-<h2><strong>Usage</strong><a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
-<p>The board ships with everything ready to go - preloaded with firmware to start flashing right away.  Even the microSD card is preloaded with bin files for trigBoard release (11/29/21)</p>
-<dl class="docutils">
-<dt><strong>Board Power</strong></dt>
-<dd>Can just connect a micro USB cable to the board or a 4.2V lithium battery (CHECK POLARITY), any of the <a class="reference external" href="https://www.adafruit.com/product/258">adafruit batteries</a> will work.  Note that the board can also charge the battery - the charge LED indicates status red-charging, green-complete</dd>
-<dt><strong>Target Power</strong></dt>
-<dd>The board has a PH-2 JST connector that can be used to power the target ESP32.  There are 4 power sources for this connector selected by jumper:
-* 3.0V is a switched power source that the board can turn on/off on-demand.  Very useful for power cycling the target and since it’s 3.0V, can be used for calibration.  <strong>RECCOMENDED</strong>
-* 5V always on from USB, or boosted if running on battery
-* 3.3V always on
-* VBAT is the raw battery voltage</dd>
-</dl>
-<p><strong>Files</strong></p>
-<blockquote>
-<div>When you upload from the Arduino IDE, it flashes x4 bin files.  One of these is the actual firmware, while the other 3 are mostly going to be the same for most applications.  You can use the stock files that are on the microSD card, and only replace this file:</div></blockquote>
-<img alt="_images/filetoreplace.png" class="align-center" src="_images/filetoreplace.png" />
-<p>You can generate this file yourself by “Export Compile Binary” from the Arduino IDE:</p>
-<img alt="_images/exportcompilebinary.png" class="align-center" src="_images/exportcompilebinary.png" />
-<dl class="docutils">
-<dt>The ESPprogrammer will automatically find all of these files by their names, so don’t worry about renaming.</dt>
-<dd>This is how it finds these files:</dd>
-</dl>
-<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="k">const</span> <span class="kt">char</span> <span class="n">bootKey</span><span class="p">[]</span> <span class="o">=</span> <span class="s">&quot;boot_app&quot;</span><span class="p">;</span>
-<span class="k">const</span> <span class="kt">char</span> <span class="n">bootloaderKey</span><span class="p">[]</span> <span class="o">=</span> <span class="s">&quot;bootloader&quot;</span><span class="p">;</span>
-<span class="k">const</span> <span class="kt">char</span> <span class="n">partitionsKey</span><span class="p">[]</span> <span class="o">=</span> <span class="s">&quot;partitions&quot;</span><span class="p">;</span>
-<span class="k">const</span> <span class="kt">char</span> <span class="n">firmwareKey</span><span class="p">[]</span> <span class="o">=</span> <span class="s">&quot;.ino.bin&quot;</span><span class="p">;</span><span class="c1">//when you flash over USB, it looks like this</span>
-<span class="k">const</span> <span class="kt">char</span> <span class="n">firmwareSecondKey</span><span class="p">[]</span> <span class="o">=</span> <span class="s">&quot;esp32.bin&quot;</span><span class="p">;</span><span class="c1">//when you export compiled binary, this is the file it generates</span>
-</pre></div>
-</div>
-<p>Those other three bin files can also be updated, since these are generated when their are updates to the ESP32 core or if any of the board settings are changed.  From the IDE, make sure Verbose output is enabled, then when you try to upload via USB (even if a board isn’t connected), you want to copy this last command out:</p>
-<img alt="_images/compiledcomandline.png" class="align-center" src="_images/compiledcomandline.png" />
-<p>Paste that into text editor and you’ll see the paths to all 4 bin files:</p>
-<img alt="_images/flashingpaths.png" class="align-center" src="_images/flashingpaths.png" />
-<p>You can navigate to these folders and <strong>COPY</strong> them to the microSD card.</p>
-<p><strong>Connections</strong></p>
-<p><strong>All signals are 3.3V! regardless of target power setting</strong></p>
-<p>The female 1x6 connector follows a standard FTDI pinout, where the DTR pin is controlled by the board to trigger the auto-reset circuit, but if your target board doesn’t have an auto-reset circuit, then you’ll have to toggle reset/gpio0 on the target to place in download mode.</p>
-<p>The 2x6 was intended to be used with <a class="reference external" href="https://www.tag-connect.com/product/tc2030-idc-nl">Tag Connect Cables</a></p>
-<p>You’ll notice that even the programmer board uses this style interface, so technically programmer board can upload to another programmer board!!</p>
-<img alt="_images/uploadtoanotherporgrammer.png" class="align-center" src="_images/uploadtoanotherporgrammer.png" />
-<p>For reference, the supporting pinout on the target board:</p>
-<img alt="_images/tagconnecttargetfootprint.png" class="align-center" src="_images/tagconnecttargetfootprint.png" />
-<p><strong>Flashing</strong></p>
-<ul class="simple">
-<li>Files loaded on microSD card?</li>
-<li>Target Power set?</li>
-<li>Target board connected?</li>
-<li>Programmer board has power?</li>
-<li>Slide the switch to ON, wait for GREEN LED?</li>
-<li>PRESS Green Button, and should see the YELLOW LED start flashing, when you see the GREEN LED flash, then you know everything is working. Eventually, you’ll see the only the GREEN LED flash, and you’re done!</li>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">ESPprogrammer Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="usage.html"><strong>Usage</strong></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#board-power"><strong>Board Power</strong></a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#files"><strong>Files</strong></a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#connections"><strong>Connections</strong></a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#flashing"><strong>Flashing</strong></a></li>
 </ul>
-<p>NOTE: If you see the RED LED turn on, this means something went wrong and will have press the RESET button to start over. You can connect to the HOST Programming port with a USB-Serial converter to debug what went wrong.</p>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="source.html"><strong>Source</strong></a></li>
+</ul>
 </div>
-<div class="section" id="source">
-<h2><strong>Source</strong><a class="headerlink" href="#source" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/krdarrah/ESP32programmer">ESP Programmer Firmware Github</a></p>
-<img alt="_images/ESP32programmerV1.0_SCH.pdf" class="align-center" src="_images/ESP32programmerV1.0_SCH.pdf" />
 </div>
 </div>
 
@@ -235,6 +186,13 @@
            
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="usage.html" class="btn btn-neutral float-right" title="Usage" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+    </div>
   
 
   <hr/>
