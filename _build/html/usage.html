@@ -89,6 +89,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#files"><strong>Files</strong></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#connections"><strong>Connections</strong></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#flashing"><strong>Flashing</strong></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#clone-board-copy-spiffs"><strong>Clone Board/Copy SPIFFS</strong></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="source.html"><strong>Source</strong></a></li>
@@ -198,6 +199,8 @@
 <p>Paste that into text editor and you’ll see the paths to all 4 bin files:</p>
 <img alt="_images/flashingpaths.png" class="align-center" src="_images/flashingpaths.png" />
 <p>You can navigate to these folders and <strong>COPY</strong> them to the microSD card.</p>
+<p>Also, note the offsets above. These can change depending on your partition scheme, so double check your settings and note that you may have to also change the ESP programmer code. <strong>*THE PARTITON SCHEME USED HERE IS “Minimal SPIFFS(1.9MB APP with OTA/190KB SPIFFS)”*</strong></p>
+<img alt="_images/flashingStartOffset.png" class="align-center" src="_images/flashingStartOffset.png" />
 </div>
 <div class="section" id="connections">
 <h2><strong>Connections</strong><a class="headerlink" href="#connections" title="Permalink to this headline">¶</a></h2>
@@ -220,6 +223,49 @@
 <li>PRESS Green Button, and should see the YELLOW LED start flashing, when you see the GREEN LED flash, then you know everything is working. Eventually, you’ll see the only the GREEN LED flash, and you’re done!</li>
 </ul>
 <p>NOTE: If you see the RED LED turn on, this means something went wrong and will have press the RESET button to start over. You can connect to the HOST Programming port with a USB-Serial converter to debug what went wrong.</p>
+</div>
+<div class="section" id="clone-board-copy-spiffs">
+<h2><strong>Clone Board/Copy SPIFFS</strong><a class="headerlink" href="#clone-board-copy-spiffs" title="Permalink to this headline">¶</a></h2>
+<p>A lot of ESP32 projects will use SPIFFS to store various settings/parameters.  All customizable features in the trigBoard are stored in SPIFFS, so if you had one “golden” board that you had setup (WiFi/Push Notification Settings/etc), then you can also create a separate bin file that contains this information as well.  Otherwise, when you flash only the 4 files as described above, the SPIFFS remains as-is.  So if you’re flashing a fresh device, the SPIFFS will be blank…. or maybe you want to erase the SPIFFS as well?  This is possible with this same technique.</p>
+<p><strong>STEP 1 - READ FROM GOLDEN BOARD</strong> You will need to use the command line/terminal with a USB-Serial converter connected to the “Golden” ESP32.  Will be using MacOS for this walkthrough, though should be similar on Windows.</p>
+<p>Fastest way to get going with this is to use the Arduino IDE as if you’re programming an ESP32.  Connect the USB-Serial converter, choose the com port, and <strong>without</strong> the ESP32 connected, try uploading a blank sketch.  <strong>It will obviously fail</strong> but this is what we want.  Now you can copy out the command used to flash the board:</p>
+<img alt="_images/compiledcomandline.png" class="align-center" src="_images/compiledcomandline.png" />
+<p>We’re not going to flash, but instead, we’re going to read the flash. This sets up the command for us, so you’ll start with something like this from the Arduino IDE:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">kevindarrah</span><span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">Arduino15</span><span class="o">/</span><span class="n">packages</span><span class="o">/</span><span class="n">esp32</span><span class="o">/</span><span class="n">tools</span><span class="o">/</span><span class="n">esptool_py</span><span class="o">/</span><span class="mf">3.0</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">esptool</span> <span class="o">--</span><span class="n">chip</span> <span class="n">esp32</span> <span class="o">--</span><span class="n">port</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">cu</span><span class="o">.</span><span class="n">usbserial</span><span class="o">-</span><span class="n">DA00XJ7V</span> <span class="o">--</span><span class="n">baud</span> <span class="mi">921600</span> <span class="o">--</span><span class="n">before</span> <span class="n">default_reset</span> <span class="o">--</span><span class="n">after</span> <span class="n">hard_reset</span> <span class="n">write_flash</span> <span class="o">-</span><span class="n">z</span> <span class="o">--</span><span class="n">flash_mode</span> <span class="n">dio</span> <span class="o">--</span><span class="n">flash_freq</span> <span class="mi">80</span><span class="n">m</span> <span class="o">--</span><span class="n">flash_size</span> <span class="n">detect</span> <span class="mh">0xe000</span> <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">kevindarrah</span><span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">Arduino15</span><span class="o">/</span><span class="n">packages</span><span class="o">/</span><span class="n">esp32</span><span class="o">/</span><span class="n">hardware</span><span class="o">/</span><span class="n">esp32</span><span class="o">/</span><span class="mf">1.0</span><span class="o">.</span><span class="mi">6</span><span class="o">/</span><span class="n">tools</span><span class="o">/</span><span class="n">partitions</span><span class="o">/</span><span class="n">boot_app0</span><span class="o">.</span><span class="n">bin</span> <span class="mh">0x1000</span> <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">kevindarrah</span><span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">Arduino15</span><span class="o">/</span><span class="n">packages</span><span class="o">/</span><span class="n">esp32</span><span class="o">/</span><span class="n">hardware</span><span class="o">/</span><span class="n">esp32</span><span class="o">/</span><span class="mf">1.0</span><span class="o">.</span><span class="mi">6</span><span class="o">/</span><span class="n">tools</span><span class="o">/</span><span class="n">sdk</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">bootloader_qio_80m</span><span class="o">.</span><span class="n">bin</span> <span class="mh">0x10000</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">folders</span><span class="o">/</span><span class="n">gv</span><span class="o">/</span><span class="n">dqd77lfs72xgzhcbwrp3f6vc0000gn</span><span class="o">/</span><span class="n">T</span><span class="o">/</span><span class="n">arduino_build_3054</span><span class="o">/</span><span class="n">sketch_feb27a</span><span class="o">.</span><span class="n">ino</span><span class="o">.</span><span class="n">bin</span> <span class="mh">0x8000</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">folders</span><span class="o">/</span><span class="n">gv</span><span class="o">/</span><span class="n">dqd77lfs72xgzhcbwrp3f6vc0000gn</span><span class="o">/</span><span class="n">T</span><span class="o">/</span><span class="n">arduino_build_3054</span><span class="o">/</span><span class="n">sketch_feb27a</span><span class="o">.</span><span class="n">ino</span><span class="o">.</span><span class="n">partitions</span><span class="o">.</span><span class="n">bin</span>
+</pre></div>
+</div>
+<p>Let’s change that to this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">kevindarrah</span><span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">Arduino15</span><span class="o">/</span><span class="n">packages</span><span class="o">/</span><span class="n">esp32</span><span class="o">/</span><span class="n">tools</span><span class="o">/</span><span class="n">esptool_py</span><span class="o">/</span><span class="mf">3.0</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">esptool</span> <span class="o">--</span><span class="n">chip</span> <span class="n">esp32</span> <span class="o">--</span><span class="n">port</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">cu</span><span class="o">.</span><span class="n">usbserial</span><span class="o">-</span><span class="n">DA00XJ7V</span> <span class="o">--</span><span class="n">baud</span> <span class="mi">230400</span> <span class="n">read_flash</span> <span class="mh">0x3D0000</span> <span class="mh">0x30000</span> <span class="n">spiffs</span><span class="o">.</span><span class="n">bin</span>
+</pre></div>
+</div>
+<dl class="docutils">
+<dt>Couple things I changed there:</dt>
+<dd><ul class="first simple">
+<li>Slowed the baud rate slightly for reading - this has just been more reliable for me</li>
+<li>The command is now read_flash</li>
+<li>The 0x3D0000 in there is the offset for the SPIFFS <strong>Based on your partition scheme</strong> In my case, again I used “Minimal SPIFFS… ”  But if you change this, you can look it up <a class="reference external" href="https://github.com/espressif/arduino-esp32/tree/master/tools/partitions">here</a></li>
+<li>The second number there 0x30000 is the size, which is also defined by the partition table.</li>
+</ul>
+<p class="last">For example, when you pull up the <strong>*min_spiffs.csv*</strong> from that link, you can see the two numbers you’ll need for this scheme:</p>
+</dd>
+</dl>
+<img alt="_images/compiledcomandline.png" class="align-center" src="_images/compiledcomandline.png" />
+<div class="line-block">
+<div class="line">- That “spiffs.bin” is file name for the bin file you will create. I didn’t give this a path, so it just ends up here on my machine: /Users/kevindarrah/spiffs.bin</div>
+</div>
+<p>What if you want to erase the SPIFFS?  Well, just run this command before you read the flash:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">kevindarrah</span><span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">Arduino15</span><span class="o">/</span><span class="n">packages</span><span class="o">/</span><span class="n">esp32</span><span class="o">/</span><span class="n">tools</span><span class="o">/</span><span class="n">esptool_py</span><span class="o">/</span><span class="mf">3.0</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">esptool</span> <span class="o">--</span><span class="n">chip</span> <span class="n">esp32</span> <span class="o">--</span><span class="n">port</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">cu</span><span class="o">.</span><span class="n">usbserial</span><span class="o">-</span><span class="n">DA00XJ7V</span> <span class="n">erase_flash</span>
+</pre></div>
+</div>
+<p>Now you have an easy way for the programmer board to erase the SPIFFS as well if you want as well.</p>
+<p><strong>STEP 2 SETUP PROGRAMMER BOARD</strong></p>
+<p>The latest ESPprogrammer code supports SPIFFS programming as well, so if it finds a file on the sd card “spiffs.bin”, then it will use that to flash the SPIFFS with this file.  Otherwise, will only flash the 4 required files.</p>
+<img alt="_images/spiffsbinfile.png" class="align-center" src="_images/spiffsbinfile.png" />
+<p><strong>NOTE</strong>,just like the other 4 files, the offset in the code must match the partition scheme used, so you may have to change this code for your programmer:</p>
+<img alt="_images/spiffsoffetincode.png" class="align-center" src="_images/spiffsoffetincode.png" />
+<p>So if you’re also using the minimal SPIFFS scheme, then just copy the spiffs.bin file to the sd card and you’re good to go.</p>
+<p><strong>STEP 3 Calibration</strong></p>
+<p>The trigBoard also stores a factory calibration constant for the battery voltage measurement, so if you copy the SPIFFS from one trigBoard to another, you will also be copying the <strong>WRONG</strong> constant.  No big deal though, you’ll just need to recalibrate the new board.  Luckily, the programmer board provides an accurate 3V source, so if you have the jumper set to 3V and you’re power the board from this source, then just launch the configurator, scroll all the way down and make sure the calibration constant is set to 0.  Then you can scroll back up and see the difference away from 3.0V the board is.  Like if you see 3.5V, scroll back down and set the calibration to -0.5.  Simple as that!</p>
 </div>
 </div>
 

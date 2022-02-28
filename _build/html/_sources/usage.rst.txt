@@ -51,6 +51,11 @@ Paste that into text editor and you'll see the paths to all 4 bin files:
 
 You can navigate to these folders and **COPY** them to the microSD card.  
 
+Also, note the offsets above. These can change depending on your partition scheme, so double check your settings and note that you may have to also change the ESP programmer code. ***THE PARTITON SCHEME USED HERE IS "Minimal SPIFFS(1.9MB APP with OTA/190KB SPIFFS)"***
+
+.. image:: images/flashingStartOffset.png
+   :align: center
+
 **Connections**
 --------------------
 
@@ -81,3 +86,75 @@ For reference, the supporting pinout on the target board:
 - PRESS Green Button, and should see the YELLOW LED start flashing, when you see the GREEN LED flash, then you know everything is working. Eventually, you'll see the only the GREEN LED flash, and you're done!  
 
 NOTE: If you see the RED LED turn on, this means something went wrong and will have press the RESET button to start over. You can connect to the HOST Programming port with a USB-Serial converter to debug what went wrong.
+
+**Clone Board/Copy SPIFFS**
+-----------------------------
+
+A lot of ESP32 projects will use SPIFFS to store various settings/parameters.  All customizable features in the trigBoard are stored in SPIFFS, so if you had one "golden" board that you had setup (WiFi/Push Notification Settings/etc), then you can also create a separate bin file that contains this information as well.  Otherwise, when you flash only the 4 files as described above, the SPIFFS remains as-is.  So if you're flashing a fresh device, the SPIFFS will be blank.... or maybe you want to erase the SPIFFS as well?  This is possible with this same technique.  
+
+**STEP 1 - READ FROM GOLDEN BOARD** You will need to use the command line/terminal with a USB-Serial converter connected to the "Golden" ESP32.  Will be using MacOS for this walkthrough, though should be similar on Windows.  
+
+Fastest way to get going with this is to use the Arduino IDE as if you're programming an ESP32.  Connect the USB-Serial converter, choose the com port, and **without** the ESP32 connected, try uploading a blank sketch.  **It will obviously fail** but this is what we want.  Now you can copy out the command used to flash the board:
+
+.. image:: images/compiledcomandline.png
+   :align: center
+
+We're not going to flash, but instead, we're going to read the flash. This sets up the command for us, so you'll start with something like this from the Arduino IDE::
+
+/Users/kevindarrah/Library/Arduino15/packages/esp32/tools/esptool_py/3.0.0/esptool --chip esp32 --port /dev/cu.usbserial-DA00XJ7V --baud 921600 --before default_reset --after hard_reset write_flash -z --flash_mode dio --flash_freq 80m --flash_size detect 0xe000 /Users/kevindarrah/Library/Arduino15/packages/esp32/hardware/esp32/1.0.6/tools/partitions/boot_app0.bin 0x1000 /Users/kevindarrah/Library/Arduino15/packages/esp32/hardware/esp32/1.0.6/tools/sdk/bin/bootloader_qio_80m.bin 0x10000 /var/folders/gv/dqd77lfs72xgzhcbwrp3f6vc0000gn/T/arduino_build_3054/sketch_feb27a.ino.bin 0x8000 /var/folders/gv/dqd77lfs72xgzhcbwrp3f6vc0000gn/T/arduino_build_3054/sketch_feb27a.ino.partitions.bin
+
+Let's change that to this::
+
+/Users/kevindarrah/Library/Arduino15/packages/esp32/tools/esptool_py/3.0.0/esptool --chip esp32 --port /dev/cu.usbserial-DA00XJ7V --baud 230400 read_flash 0x3D0000 0x30000 spiffs.bin
+
+
+Couple things I changed there: 
+   - Slowed the baud rate slightly for reading - this has just been more reliable for me
+   - The command is now read_flash
+   - The 0x3D0000 in there is the offset for the SPIFFS **Based on your partition scheme** In my case, again I used "Minimal SPIFFS... "  But if you change this, you can look it up `here <https://github.com/espressif/arduino-esp32/tree/master/tools/partitions>`_
+   - The second number there 0x30000 is the size, which is also defined by the partition table.
+
+   For example, when you pull up the ***min_spiffs.csv*** from that link, you can see the two numbers you'll need for this scheme: 
+
+.. image:: images/compiledcomandline.png
+   :align: center
+
+|  - That "spiffs.bin" is file name for the bin file you will create. I didn't give this a path, so it just ends up here on my machine: /Users/kevindarrah/spiffs.bin
+
+What if you want to erase the SPIFFS?  Well, just run this command before you read the flash::
+
+   /Users/kevindarrah/Library/Arduino15/packages/esp32/tools/esptool_py/3.0.0/esptool --chip esp32 --port /dev/cu.usbserial-DA00XJ7V erase_flash
+
+Now you have an easy way for the programmer board to erase the SPIFFS as well if you want as well.  
+
+**STEP 2 SETUP PROGRAMMER BOARD**
+
+The latest ESPprogrammer code supports SPIFFS programming as well, so if it finds a file on the sd card "spiffs.bin", then it will use that to flash the SPIFFS with this file.  Otherwise, will only flash the 4 required files.  
+
+.. image:: images/spiffsbinfile.png
+   :align: center
+
+**NOTE**,just like the other 4 files, the offset in the code must match the partition scheme used, so you may have to change this code for your programmer:
+
+.. image:: images/spiffsoffetincode.png
+   :align: center
+
+So if you're also using the minimal SPIFFS scheme, then just copy the spiffs.bin file to the sd card and you're good to go.  
+
+**STEP 3 Calibration**
+
+The trigBoard also stores a factory calibration constant for the battery voltage measurement, so if you copy the SPIFFS from one trigBoard to another, you will also be copying the **WRONG** constant.  No big deal though, you'll just need to recalibrate the new board.  Luckily, the programmer board provides an accurate 3V source, so if you have the jumper set to 3V and you're power the board from this source, then just launch the configurator, scroll all the way down and make sure the calibration constant is set to 0.  Then you can scroll back up and see the difference away from 3.0V the board is.  Like if you see 3.5V, scroll back down and set the calibration to -0.5.  Simple as that!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
