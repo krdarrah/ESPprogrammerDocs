@@ -23,6 +23,15 @@ ESP Programmer
 * It's based on an ESP32!  This means you have the ability to activate an AP for your target ESP32 to connect to and communicate with.  The trigBoard tester firmware did just this and sent over messages containing critical board information that was part of the automated test sequence.  You also have bluetooth available as well. 
 * The board provides a 6 pin UART interface that can be used to provide information back up to a PC.  Test logs, MAC address, etc... Even had one customer consider using this with a thermal printer. 
 
+**Where to buy?**
+
+.. raw:: html
+
+   <div>
+   <a href="https://www.tindie.com/stores/kdcircuits/?ref=offsite_badges&utm_source=sellers_kdcircuits&utm_medium=badges&utm_campaign=badge_large"><img src="https://d2ss6ovg47m0r5.cloudfront.net/badges/tindie-larges.png" alt="I sell on Tindie" width="200" height="104"></a>
+   </div>
+
+For higher quantities or OEM opportunities, please `contact KD Circuits directly <https://www.kdcircuits.com#contact>`_
 
 .. toctree::
    :maxdepth: 2 
