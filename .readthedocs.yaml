@@ -7,8 +7,8 @@ version: 2
 # Set the OS, Python version, and other tools you might need
 build:
   os: ubuntu-22.04
-  python:
-    version: 2.7
+  tools:
+    python: "2.7"
     install:
       - requirements: docs/requirements.txt  # adjust the path if needed
       - sphinx_rtd_theme
@@ -29,6 +29,7 @@ sphinx:
 # Optional but recommended, declare the Python requirements required
 # to build your documentation
 # See https://docs.readthedocs.io/en/stable/guides/reproducible-builds.html
-# python:
-#   install:
-#     - requirements: docs/requirements.txt
+python:
+  version: 2.7
+  install:
+    - requirements: docs/requirements.txt
