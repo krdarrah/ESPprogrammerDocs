@@ -14,8 +14,9 @@ build:
     # rust: "1.70"
     # golang: "1.20"
     install:
+      - requirements: docs/requirements.txt  # adjust the path if needed
       - sphinx_rtd_theme
-      #- requirements: docs/requirements.txt  # adjust the path if needed
+      #
 
 
 
