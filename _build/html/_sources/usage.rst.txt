@@ -85,7 +85,7 @@ Also, note the offsets above. These can change depending on your partition schem
 
 **All signals are 3.3V! regardless of target power setting**
 
-The female 1x6 connector follows a standard FTDI pinout, where the DTR pin is controlled by the board to trigger the auto-reset circuit, but if your target board doesn't have an auto-reset circuit, then you'll have to toggle reset/gpio0 on the target to place in download mode. 
+The female 1x6 connector follows a standard FTDI pinout, where the DTR pin is controlled by the board to trigger the auto-reset circuit, but if your target board doesn't have an auto-reset circuit, then you'll have to toggle reset/gpio0 on the target to place in download mode. The other way that I've tested the board with targets that don't support an auto reset circuit is to let programmer just cycle power, and connect the DTR pin to the Boot pin on the target - tested this on ESP32-S3 and -C3 customer boards.  Just note that this is with the jumper in the 3V position since this is the "switched" power from the programmer.   
 
 The 2x6 was intended to be used with `Tag Connect Cables <https://www.tag-connect.com/product/tc2030-idc-nl>`_
 
