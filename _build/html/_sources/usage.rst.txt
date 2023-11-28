@@ -51,6 +51,30 @@ Paste that into text editor and you'll see the paths to all 4 bin files:
 
 You can navigate to these folders and **COPY** them to the microSD card.  
 
+**NEW FOR BOARDS SHIPPED AFTER NOV 2023** There is now a **config.txt** file on the sd card that can be used to set the programming offsets to anything you want. Useful for programming different variants of the ESP32, like the S3, C3, etc..  This file is very sensitive to spaces and formatting, so be careful when changing this.
+
+Here is an example for an ESP32
+
+.. code-block:: C
+
+   bootNameOffset=0xe000
+   bootloaderNameOffset=0x1000
+   partitionsNameOffset=0x8000
+   firmwareNameOffset=0x10000
+   spiffsNameOffset=0x3D0000
+
+Here is an example for an ESP32-S3
+
+.. code-block:: C
+
+   bootNameOffset=0xe000
+   bootloaderNameOffset=0x0
+   partitionsNameOffset=0x8000
+   firmwareNameOffset=0x10000
+   spiffsNameOffset=0x10000
+
+
+**THIS IS JUST HERE FOR REFERENCE, but all boards shipped before Oct 2023, have the these offsets hard coded**
 Also, note the offsets above. These can change depending on your partition scheme, so double check your settings and note that you may have to also change the ESP programmer code. ***THE PARTITON SCHEME USED HERE IS "Minimal SPIFFS(1.9MB APP with OTA/190KB SPIFFS)"***
 
 .. image:: images/flashingStartOffset.png

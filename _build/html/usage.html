@@ -199,7 +199,25 @@
 <p>Paste that into text editor and you’ll see the paths to all 4 bin files:</p>
 <img alt="_images/flashingpaths.png" class="align-center" src="_images/flashingpaths.png" />
 <p>You can navigate to these folders and <strong>COPY</strong> them to the microSD card.</p>
-<p>Also, note the offsets above. These can change depending on your partition scheme, so double check your settings and note that you may have to also change the ESP programmer code. <strong>*THE PARTITON SCHEME USED HERE IS “Minimal SPIFFS(1.9MB APP with OTA/190KB SPIFFS)”*</strong></p>
+<p><strong>NEW FOR BOARDS SHIPPED AFTER NOV 2023</strong> There is now a <strong>config.txt</strong> file on the sd card that can be used to set the programming offsets to anything you want. Useful for programming different variants of the ESP32, like the S3, C3, etc..  This file is very sensitive to spaces and formatting, so be careful when changing this.</p>
+<p>Here is an example for an ESP32</p>
+<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="n">bootNameOffset</span><span class="o">=</span><span class="mh">0xe000</span>
+<span class="n">bootloaderNameOffset</span><span class="o">=</span><span class="mh">0x1000</span>
+<span class="n">partitionsNameOffset</span><span class="o">=</span><span class="mh">0x8000</span>
+<span class="n">firmwareNameOffset</span><span class="o">=</span><span class="mh">0x10000</span>
+<span class="n">spiffsNameOffset</span><span class="o">=</span><span class="mh">0x3D0000</span>
+</pre></div>
+</div>
+<p>Here is an example for an ESP32-S3</p>
+<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="n">bootNameOffset</span><span class="o">=</span><span class="mh">0xe000</span>
+<span class="n">bootloaderNameOffset</span><span class="o">=</span><span class="mh">0x0</span>
+<span class="n">partitionsNameOffset</span><span class="o">=</span><span class="mh">0x8000</span>
+<span class="n">firmwareNameOffset</span><span class="o">=</span><span class="mh">0x10000</span>
+<span class="n">spiffsNameOffset</span><span class="o">=</span><span class="mh">0x10000</span>
+</pre></div>
+</div>
+<p><strong>THIS IS JUST HERE FOR REFERENCE, but all boards shipped before Oct 2023, have the these offsets hard coded</strong>
+Also, note the offsets above. These can change depending on your partition scheme, so double check your settings and note that you may have to also change the ESP programmer code. <strong>*THE PARTITON SCHEME USED HERE IS “Minimal SPIFFS(1.9MB APP with OTA/190KB SPIFFS)”*</strong></p>
 <img alt="_images/flashingStartOffset.png" class="align-center" src="_images/flashingStartOffset.png" />
 </div>
 <div class="section" id="connections">
