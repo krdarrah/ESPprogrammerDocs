@@ -13,12 +13,11 @@ build:
     # nodejs: "20"
     # rust: "1.70"
     # golang: "1.20"
+  python:
+    version: 2.7
     install:
       - requirements: docs/requirements.txt  # adjust the path if needed
       - sphinx_rtd_theme
-      #
-
-
 
 # Build documentation in the "docs/" directory with Sphinx
 sphinx:
@@ -27,8 +26,6 @@ sphinx:
   # builder: "dirhtml"
   # Fail on all warnings to avoid broken references
   # fail_on_warning: true
-
-
 
 # Optionally build your docs in additional formats such as PDF and ePub
 # formats:
